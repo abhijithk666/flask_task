@@ -44,7 +44,8 @@ def login():
             session['id'] = account['id']
             session['username'] = account['username']
             msg = 'Logged in successfully !'
-            return render_template('dashboard.html', msg = msg)
+            user=request.form.get('username')
+            return redirect(url_for('dashboard'))
         else:
             msg = 'Incorrect username / password !'
     return render_template('login.html', msg = msg)
@@ -89,7 +90,16 @@ def register():
     return render_template('register.html', msg = msg)
 
 
-
+@app.route('/dashboard')
+def dashboard():
+    #print('success')
+    cursor=mysql.connection.cursor()
+    user=session['username']
+    #print(user)
+    cursor.execute("select * from user where name=%s",(user,))
+    data= cursor.fetchone()
+    #print(data)
+    return render_template('dashboard.html',data=data)
 
 
 
